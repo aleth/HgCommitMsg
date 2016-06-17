@@ -1,0 +1,4 @@
+[{
+    "caption": "HgCommitMsg: Show commit history for selected lines",
+    "command": "hg_commit_msg"
+}]
