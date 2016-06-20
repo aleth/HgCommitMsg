@@ -12,7 +12,7 @@ class HgCommitMsgThread(threading.Thread):
     self.file_name = view.file_name()
     self.start_line = view.rowcol(selected.begin())[0] + 1
     self.end_line = view.rowcol(selected.end())[0] + 1
-    cmd = "hg log -v $(hg annotate '%s' | cat -n | sed -n %d,%dp | awk '{print \" -r \" $2}' | sed 's/:$//' | tr -d '\n')"
+    cmd = "hg log -v $(hg annotate '%s' | cat -n | sed -n %d,%dp | awk '{print \" -r \" $2}' | sort -r | sed 's/:$//' | tr -d '\n')"
 
     self.command = cmd % (self.file_name, self.start_line, self.end_line)
     self.dir_name = os.path.dirname(self.file_name)
