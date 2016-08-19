@@ -4,6 +4,9 @@ import subprocess
 import os
 import sys
 
+def get_settings():
+    return sublime.load_settings("HgCommitMsg.sublime-settings")
+
 class HgCommitMsgThread(threading.Thread):
   def __init__(self, view):
     threading.Thread.__init__(self)
@@ -12,9 +15,11 @@ class HgCommitMsgThread(threading.Thread):
     self.file_name = view.file_name()
     self.start_line = view.rowcol(selected.begin())[0] + 1
     self.end_line = view.rowcol(selected.end())[0] + 1
-    cmd = "hg log -v $(hg annotate '%s' | cat -n | sed -n %d,%dp | awk '{print \" -r \" $2}' | sort -r | sed 's/:$//' | tr -d '\n')"
+    cmd = "'%s' log -v $('%s' annotate '%s' | cat -n | sed -n %d,%dp | awk '{print \" -r \" $2}' | sort -r | sed 's/:$//' | tr -d '\n')"
 
-    self.command = cmd % (self.file_name, self.start_line, self.end_line)
+    hg_path = get_settings().get('hg_path', 'hg')
+
+    self.command = cmd % (hg_path, hg_path, self.file_name, self.start_line, self.end_line)
     self.dir_name = os.path.dirname(self.file_name)
 
   def run(self):
